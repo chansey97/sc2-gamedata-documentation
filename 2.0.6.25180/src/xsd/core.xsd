@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://sc2-mined-data/gamedata/core" xmlns="http://sc2-mined-data/gamedata/core">
+    <xs:simpleType name="Category">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Unknown"/>
+            <xs:enumeration value="Struct"/>
+            <xs:enumeration value="String"/>
+            <xs:enumeration value="Enum"/>
+            <xs:enumeration value="Fixed"/>
+            <xs:enumeration value="Flags"/>
+            <xs:enumeration value="Float"/>
+            <xs:enumeration value="FourCC"/>
+            <xs:enumeration value="IntSigned"/>
+            <xs:enumeration value="IntUnsigned"/>
+            <xs:enumeration value="CatalogLink"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="Type">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="category" type="Category" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="UnderlyingType">
+        <xs:complexContent>
+            <xs:extension base="Type"/>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Enum">
+        <xs:complexContent>
+            <xs:extension base="Type">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Literal">
+                        <xs:complexType>
+                            <xs:attribute name="name" type="xs:string"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="literal-prefix" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:complexType name="Class">
+        <xs:complexContent>
+            <xs:extension base="Type">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="Field">
+                        <xs:complexType>
+                            <xs:attribute name="name" type="xs:string" use="required"/>
+                            <xs:attribute name="type" type="xs:string" use="required"/>
+                            <xs:attribute default="false" name="array" type="xs:boolean"/>
+                            <xs:attribute name="minValue" type="xs:string"/>
+                            <xs:attribute name="maxValue" type="xs:string"/>
+                            <xs:attribute name="indexEnum" type="xs:string"/>
+                        </xs:complexType>
+                    </xs:element>
+                </xs:sequence>
+                <xs:attribute name="superClass" type="xs:string"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+    <xs:element name="Type" type="Type" abstract="true"/>
+    <xs:element name="UnderlyingType" substitutionGroup="Type" type="UnderlyingType"/>
+    <xs:element name="Enum" substitutionGroup="Type" type="Enum"/>
+    <xs:element name="Class" substitutionGroup="Type" type="Class"/>
+    <xs:element name="Package">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="Type" maxOccurs="unbounded" minOccurs="0"/>
+            </xs:sequence>
+            <xs:attribute name="name"/>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="Model">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element maxOccurs="unbounded" minOccurs="0" ref="Package"/>
+            </xs:sequence>
+            <xs:attribute name="version" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>
