@@ -9,6 +9,4 @@ You may download the documentation with the latest release always available [her
 
 ### Demo pics
 
-![class-hierarchy](class-hierarchy.png)
-
-![module-dependency](module-dependency.png)
+![class-hierarchy](class-hierarchy.png) ![module-dependency](module-dependency.png)
